@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demande de Prêt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-item.active {
+            background-color: #f0fdf4;
+            border-left: 4px solid #16a34a;
+        }
+        #loan-amount::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #16a34a;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #loan-duration::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #16a34a;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+         
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Configuration Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+  authDomain: "adash-c842a.firebaseapp.com",
+  databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "adash-c842a",
+  storageBucket: "adash-c842a.firebasestorage.app",
+  messagingSenderId: "710633068131",
+  appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+  measurementId: "G-54PVF2XYKW"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// Authentification
+onAuthStateChanged(auth, async (user) => {
+  const inscriptionBtn = document.getElementById("inscriptionBtn");
+  const userInfoDiv = document.getElementById("userInfo");
+
+  if (user) {
+    // Masquer bouton inscription
+    inscriptionBtn && (inscriptionBtn.style.display = "none");
+
+    // Afficher l'utilisateur connecté
+    userInfoDiv.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img src="default-avatar.png" class="w-8 h-8 rounded-full" alt="Profil">
+        <span class="text-gray-800 font-medium">${user.displayName || "Utilisateur"}</span>
+        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">Déconnexion</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => location.reload());
+    });
+
+    // 🔽 Charger les données de l'utilisateur
+    const userRef = ref(database, `utilisateurs/${user.uid}`);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        afficherDonneesUtilisateur(userData);
+      } else {
+        console.log("Aucune donnée pour cet utilisateur.");
+      }
+    } catch (error) {
+      console.error("Erreur de lecture des données:", error);
+    }
+
+  } else {
+    // Si non connecté
+    inscriptionBtn && (inscriptionBtn.style.display = "block");
+    userInfoDiv.innerHTML = "";
+  }onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Redirige vers la page d'inscription si pas connecté
+      window.location.href = "Inscription.html";
+    }
+  });
+});</script>
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Alogo.jpg" alt="Logo ADASH CI" class="h-12 mr-3">
+               <a href="acceuil.html"><h1 class="text-xl font-bold text-green-800">ADASH CI</h1></a> 
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button id="notification-btn" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button id="profile-btn" class="flex items-center space-x-2">
+                        <img src="moussa.jpg" alt="Profil" class="w-10 h-10 rounded-full">
+                        <span class="hidden md:inline text-gray-700">Dessi C.</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6 flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md mb-6 md:mb-0 md:mr-6">
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="mon profil.html" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-user mr-3"></i>
+                            <span>Mon profil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mon profil.html#mes formations" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-graduation-cap mr-3"></i>
+                            <span>Mes formations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-file-certificate mr-3"></i>
+                            <span>Mes certificats</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item active flex items-center px-4 py-3 text-green-700 font-medium rounded-lg">
+                            <i class="fas fa-hand-holding-usd mr-3"></i>
+                            <span>Mes prêts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mon profil.html#calendrier" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Mon calendrier</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="contact.html" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-address-book mr-3"></i>
+                            <span>Contacts</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Loans Content -->
+        <main class="flex-1">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-green-800">Demande de Prêt</h2>
+                    <a href="#" class="text-green-600 hover:text-green-800 font-medium flex items-center">
+                        <i class="fas fa-list mr-2"></i>
+                        Voir mes prêts existants
+                    </a>
+                </div>
+                
+                <!-- Loan Calculator -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Loan Form -->
+                    <div class="lg:col-span-2 bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-green-700 mb-4">Simulateur de prêt</h3>
+                        
+                        <!-- Montant du prêt -->
+                        <div class="mb-6">
+                            <label for="loan-amount" class="block text-sm font-medium text-gray-700 mb-2">
+                                Montant du prêt (FCFA)
+                                <span id="loan-amount-value" class="font-bold text-green-700 ml-2">1 000 000</span>
+                            </label>
+                            <input type="range" id="loan-amount" min="500000" max="5000000" step="50000" value="1000000" 
+                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>500 000 FCFA</span>
+                                <span>5 000 000 FCFA</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Durée du prêt -->
+                        <div class="mb-6">
+                            <label for="loan-duration" class="block text-sm font-medium text-gray-700 mb-2">
+                                Durée du prêt (mois)
+                                <span id="loan-duration-value" class="font-bold text-green-700 ml-2">12</span>
+                            </label>
+                            <input type="range" id="loan-duration" min="6" max="36" step="1" value="12" 
+                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>6 mois</span>
+                                <span>36 mois</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Type de prêt -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Type de prêt</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <button class="loan-type-btn bg-green-100 text-green-800 border border-green-300 py-2 px-4 rounded-lg font-medium">
+                                    Équipement
+                                </button>
+                                <button class="loan-type-btn bg-white text-gray-800 border border-gray-300 py-2 px-4 rounded-lg font-medium">
+                                    Semences
+                                </button>
+                                <button class="loan-type-btn bg-white text-gray-800 border border-gray-300 py-2 px-4 rounded-lg font-medium">
+                                    Investissement
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- But du prêt -->
+                        <div class="mb-6">
+                            <label for="loan-purpose" class="block text-sm font-medium text-gray-700 mb-2">But du prêt</label>
+                            <textarea id="loan-purpose" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Décrivez l'utilisation prévue du prêt..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Loan Summary -->
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-green-700 mb-4">Récapitulatif</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Montant demandé:</span>
+                                <span class="font-medium" id="summary-amount">1 000 000 FCFA</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Durée:</span>
+                                <span class="font-medium" id="summary-duration">12 mois</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Taux annuel:</span>
+                                <span class="font-medium">8%</span>
+                            </div>
+                            <div class="flex justify-between border-t border-gray-200 pt-3">
+                                <span class="text-gray-600">Mensualité:</span>
+                                <span class="font-bold text-green-700" id="monthly-payment">90 333 FCFA</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Total à rembourser:</span>
+                                <span class="font-bold" id="total-repayment">1 084 000 FCFA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-100 border-l-4 border-green-500 p-4 mb-6">
+                            <div class="flex">
+                                <div class="flex-shrink-0 text-green-600">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-green-700">
+                                        Votre demande sera traitée dans les 48h. Un conseiller vous contactera pour finaliser le processus.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="submit-loan" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Soumettre ma demande
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Loan Details -->
+                <div class="bg-white border border-gray-200 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-green-700 mb-4">Détails du prêt</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mois</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capital</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Intérêt</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mensualité</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reste dû</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="amortization-table">
+                                <!-- Rempli par JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ADASH CI</h3>
+                    <p class="text-gray-400">Votre partenaire en agriculture durable</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Centre d'aide</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Nous contacter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Légal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Conditions d'utilisation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Politique de confidentialité</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2025 ADASH CI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Format number with spaces as thousand separators
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        // Calculate loan details
+        function calculateLoan() {
+            const amount = parseInt(document.getElementById('loan-amount').value);
+            const duration = parseInt(document.getElementById('loan-duration').value);
+            const annualRate = 8; // 8% annual rate
+            const monthlyRate = annualRate / 100 / 12;
+            
+            // Calculate monthly payment
+            const monthlyPayment = amount * (monthlyRate * Math.pow(1 + monthlyRate, duration)) / (Math.pow(1 + monthlyRate, duration) - 1);
+            const totalRepayment = monthlyPayment * duration;
+            
+            // Update summary
+            document.getElementById('summary-amount').textContent = formatNumber(amount) + ' FCFA';
+            document.getElementById('summary-duration').textContent = duration + ' mois';
+            document.getElementById('monthly-payment').textContent = formatNumber(Math.round(monthlyPayment)) + ' FCFA';
+            document.getElementById('total-repayment').textContent = formatNumber(Math.round(totalRepayment)) + ' FCFA';
+            
+            // Generate amortization table
+            let tableHTML = '';
+            let balance = amount;
+            
+            for (let i = 1; i <= duration; i++) {
+                const interest = balance * monthlyRate;
+                const principal = monthlyPayment - interest;
+                balance -= principal;
+                
+                // Last payment adjustment to avoid rounding errors
+                if (i === duration) {
+                    balance = 0;
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${i}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatNumber(Math.round(principal))} FCFA</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatNumber(Math.round(interest))} FCFA</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatNumber(Math.round(monthlyPayment))} FCFA</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${balance > 0 ? formatNumber(Math.round(balance)) + ' FCFA' : '0 FCFA'}</td>
+                    </tr>
+                `;
+            }
+            
+            document.getElementById('amortization-table').innerHTML = tableHTML;
+        }
+        
+        // Update loan amount display
+        document.getElementById('loan-amount').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            document.getElementById('loan-amount-value').textContent = formatNumber(value);
+            calculateLoan();
+        });
+        
+        // Update loan duration display
+        document.getElementById('loan-duration').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            document.getElementById('loan-duration-value').textContent = value;
+            calculateLoan();
+        });
+        
+        // Loan type buttons
+        document.querySelectorAll('.loan-type-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.loan-type-btn').forEach(btn => {
+                    btn.classList.remove('bg-green-100', 'text-green-800', 'border-green-300');
+                    btn.classList.add('bg-white', 'text-gray-800', 'border-gray-300');
+                });
+                this.classList.add('bg-green-100', 'text-green-800', 'border-green-300');
+                this.classList.remove('bg-white', 'text-gray-800', 'border-gray-300');
+            });
+        });
+        
+        // Submit loan button
+        document.getElementById('submit-loan').addEventListener('click', function() {
+            const purpose = document.getElementById('loan-purpose').value;
+            if (!purpose) {
+                alert('Veuillez décrire le but de votre prêt.');
+                return;
+            }
+            
+            // Show success message
+            alert('Votre demande de prêt a été soumise avec succès. Un conseiller vous contactera sous 48h.');
+            
+            // Reset form (for demo purposes)
+            document.getElementById('loan-purpose').value = '';
+        });
+        
+        // Initialize calculations
+        calculateLoan();
+    </script> <script>// Fonction pour récupérer les données d'une page
+async function recupererDonnees(url) {
+  try {
+    const reponse = await fetch(url);
+    if (!reponse.ok) {
+      throw new Error(`Erreur HTTP ! statut : ${reponse.status}`);
+    }
+    return await reponse.json();
+  } catch (erreur) {
+    console.error("Erreur lors de la récupération des données :", erreur);
+  }
+}
+
+// Fonction pour afficher les données dans une section spécifique
+function afficherDonnees(donnees, idSection) {
+  const section = document.getElementById(idSection);
+  if (section) {
+    section.innerHTML = JSON.stringify(donnees, null, 2);
+  } else {
+    console.error(`Section avec l'ID ${idSection} non trouvée.`);
+  }
+}
+
+// Récupérer et afficher les données pour chaque page
+async function initialiserPages() {
+  const urlFormation = 'https://exemple.com/api/formation';
+  const urlPrets = 'https://exemple.com/api/prets';
+  const urlProfil = 'https://exemple.com/api/profil';
+
+  const [donneesFormation, donneesPrets, donneesProfil] = await Promise.all([
+    recupererDonnees(urlFormation),
+    recupererDonnees(urlPrets),
+    recupererDonnees(urlProfil)
+  ]);
+
+  afficherDonnees(donneesFormation, 'formation');
+  afficherDonnees(donneesPrets, 'prets');
+  afficherDonnees(donneesProfil, 'profil');
+}
+
+// Initialiser les pages au chargement du document
+document.addEventListener('DOMContentLoaded', initialiserPages);
+</script>
+</body>
+</html>

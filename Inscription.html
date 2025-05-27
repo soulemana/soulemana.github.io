@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADASH INOVATION - Inscription</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen font-sans"><div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Left Side - Illustration -->
+        <div class="lg:w-1/2 bg-gradient-to-br from-green-50 to-emerald-100 bg-agri-pattern flex flex-col items-center justify-center p-8 text-center">
+            <div class="max-w-md">
+                <div class="animate-float mb-8">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMTBhNzUxIiBkPSJNMjU2IDhDMTE5IDggOCAxMTkgOCAyNTZzMTExIDI0OCAyNDggMjQ4IDI0OC0xMTEgMjQ4LTI0OFMzOTMgOCAyNTYgOHptMCA0NDhjLTExMC41IDAtMjAwLTg5LjUtMjAwLTIwMHM4OS41LTIwMCAyMDAtMjAwIDIwMCA4OS41IDIwMCAyMDBzLTg5LjUgMjAwLTIwMCAyMDB6bS0zMi0zMTJjLTE3LjcgMC0zMiAxNC4zLTMyIDMydjE0NGMwIDguOCA3LjIgMTYgMTYgMTZzMTYtNy4yIDE2LTE2VjE3NmMwLTguOC03LjItMTYtMTYtMTZ6bTk2IDBjLTE3LjcgMC0zMiAxNC4zLTMyIDMydjE0NGMwIDguOCA3LjIgMTYgMTYgMTZzMTYtNy4yIDE2LTE2VjE3NmMwLTguOC03LjItMTYtMTYtMTZ6Ii8+PC9zdmc+" class="w-24 h-24 mx-auto mb-4" alt="..."/>
+                </div>
+                <h1 class="text-4xl font-bold text-green-800 mb-4">ADASH CI</h1>
+                <p class="text-lg text-green-700 mb-6">Votre partenaire de microfinance pour le développement agricole</p>
+                <div class="bg-white bg-opacity-70 rounded-lg p-6 shadow-sm">
+                    <p class="text-gray-700 mb-4"><i class="fas fa-seedling text-green-500 mr-2"></i> Accès aux solutions de financement adaptées</p>
+                    <p class="text-gray-700 mb-4"><i class="fas fa-hand-holding-usd text-green-500 mr-2"></i> Taux compétitifs pour les agriculteurs</p>
+                    <p class="text-gray-700"><i class="fas fa-chart-line text-green-500 mr-2"></i> Accompagnement technique et financier</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Form -->
+        <div class="lg:w-1/2 flex items-center justify-center p-8">
+            
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Créer un compte</h2>
+                    <p class="text-gray-600 mt-2">Rejoignez notre communauté d'agriculteurs et accédez à des solutions de financement adaptées</p>
+                </div>
+
+                <form id="registrationForm" class="space-y-6">
+                    <!-- Type de compte -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Vous êtes :</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:border-green-300 has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
+                                <input id="farmer" type="radio" name="accountType" value="farmer" class="h-4 w-4 text-green-600" checked>
+                                <div>
+                                    <span class="block text-sm font-medium text-gray-700">Agriculteur</span>
+                                    <span class="block text-xs text-gray-500">Demandeur de crédit</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:border-green-300 has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
+                                <input id="investor" type="radio" name="accountType" value="investor" class="h-4 w-4 text-green-600">
+                                <div>
+                                    <span class="block text-sm font-medium text-gray-700">Investisseur</span>
+                                    <span class="block text-xs text-gray-500">Financeur de projets</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Informations personnelles -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">Prénom</label>
+                            <div class="mt-1 relative">
+                                <input id="firstName" name="firstName" type="text" required class="input-focus py-3 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700">Nom</label>
+                            <div class="mt-1 relative">
+                                <input id="lastName" name="lastName" type="text" required class="input-focus py-3 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email et Téléphone -->
+                    <div>
+                        <label for="profession" class="block text-sm font-medium text-gray-700">profession</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <input id="profession" name="profession" type="text" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">email</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input id="email" name="email" type="email" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                            <input id="phone" name="phone" type="tel" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="N° carte bancaire" class="block text-sm font-medium text-gray-700">N° carte bancaire</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-credit-card text-gray-400"></i>
+                            </div>
+                        <input id="card" name="card" type="text" inputmode="numeric" pattern="[0-9]{13,19}" maxlength="19" placeholder="1234 5678 9012 3456" class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                    </div>
+
+                    <!-- Localisation -->
+                    <div>
+                        <label for="region" class="block text-sm font-medium text-gray-700">Région</label>
+                        <div class="mt-1 relative">
+                            <select id="region" name="region" class="input-focus py-3 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                                <option value="">Sélectionnez votre région</option>
+                                <option value="Abengourou">Abengourou</option>
+                                <option value="Abidjan">Abidjan</option>
+                                <option value="Aboisso">Aboisso</option>
+                                <option value="Adzopé">Adzopé</option>
+                                <option value="Agboville">Agboville</option>
+                                <option value="Bondoukou">Bondoukou</option>
+                                <option value="Bouaké">Bouaké</option>
+                                <option value="Boundiali">Boundiali</option>
+                                <option value="Daloa">Daloa</option>
+                                <option value="Daoukro">Daoukro</option>
+                                <option value="Divo">Divo</option>
+                                <option value="Duékoué">Duékoué</option>
+                                <option value="Ferkessédougou">Ferkessédougou</option>
+                                <option value="Gagnoa">Gagnoa</option>
+                                <option value="Issia">Issia</option>
+                                <option value="Katiola">Katiola</option>
+                                <option value="Korhogo">Korhogo</option>
+                                <option value="Man">Man</option>
+                                <option value="Odiénné">Odiénné</option>
+                                <option value="San-Pédro">San-Pédro</option>
+                                <option value="Séguéla">Séguéla</option>
+                                <option value="Sinématiali">Sinématiali</option>
+                                <option value="Soubré">Soubré</option>
+                                <option value="Tanda">Tanda</option>
+                                <option value="Tengrela">Tengrela</option>
+                                <option value="Touba">Touba</option>
+                                <option value="Toumodi">Toumodi</option>
+                                <option value="Yamoussoukro">Yamoussoukro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                            <div class="mt-1 relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input id="password" name="password" type="password" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmation</label>
+                            <div class="mt-1 relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input id="confirmPassword" name="confirmPassword" type="password" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conditions -->
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="terms" name="terms" type="checkbox" required class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="terms" class="font-medium text-gray-700">J'accepte les <a href="#" class="text-green-600 hover:text-green-500">conditions générales</a></label>
+                            <p class="text-gray-500">En créant un compte, vous acceptez notre politique de confidentialité.</p>
+                        </div>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                            Créer mon compte
+                            <i class="fas fa-arrow-right ml-2 mt-0.5"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Vous avez déjà un compte? 
+                        <a href="connexion.html" class="font-medium text-green-600 hover:text-green-500">Connectez-vous</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- VOTRE FORMULAIRE D’INSCRIPTION (inchangé, contenu HTML masqué pour concision) -->
+<!-- ... -->
+
+<!-- 🔥 SCRIPT FIREBASE ACTUALISÉ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+    authDomain: "adash-c842a.firebaseapp.com",
+    databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "adash-c842a",
+    storageBucket: "adash-c842a.appspot.com",
+    messagingSenderId: "710633068131",
+    appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+    measurementId: "G-54PVF2XYKW"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  // Soumission du formulaire
+  document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      alert("Les mots de passe ne correspondent pas !");
+      return;
+    }
+
+    const formData = {
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName: document.getElementById('lastName').value.trim(),
+      profession: document.getElementById('profession').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      card: document.getElementById('card').value.trim(),
+      region: document.getElementById('region').value.trim(),
+      terms: document.getElementById('terms').checked,
+      password: password
+      investor: document.querySelector('input[name="accountType"]:checked').value === 'investor'
+      farmer:document.querySelector('input[name="accountType"]:checked').value === 'farmer'
+    }; 
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+
+      // Mettre à jour le nom complet dans le profil
+      const displayName = `${formData.firstName} ${formData.lastName}`;
+      await updateProfile(user, {
+        displayName: displayName
+      });
+
+      // Enregistrer dans la base de données
+      await set(ref(database, 'users/' + user.uid), {
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        profession: formData.profession,
+        email: formData.email,
+        phone: formData.phone,
+        region: formData.region,
+        card: formData.card,
+        termsAccepted: formData.terms,
+        createdAt: Date.now()
+      });
+
+      alert("Inscription réussie !");
+      document.getElementById("registrationForm").reset();
+
+      // Redirection ou mise à jour UI
+      window.location.href = "acceuil.html"; // ou dashboard
+
+    } catch (error) {
+      alert("Erreur lors de l'inscription : " + error.message);
+      console.error(error);
+    }
+  });
+</script>
+
+
+</body>
+</html>

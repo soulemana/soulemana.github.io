@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .bg-agri-pattern {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgxNDYsIDE2MywgMTQxLCAwLjA1KSI+PC9yZWN0PjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNwYXR0ZXJuKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSI+PC9yZWN0Pjwvc3ZnPg==');
+        }
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .create-account-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3a7d44; /* Vert arbre principal */
+    color: white;
+    text-decoration: none;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-account-btn:hover {
+    background-color: #2e6b37; /* Vert arbre plus foncé */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.create-account-btn:active {
+    background-color: #24582d; /* Vert arbre encore plus foncé */
+    transform: translateY(0);
+}
+
+.create-account-btn i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+.create-account-btn:hover i {
+    transform: translateX(4px);
+}
+.bouton{
+    display: inline-block;
+    margin-left: 37.5% ;
+    margin-right: 37.5%;
+}
+.submit-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background-color: rgba(22, 163, 74, 1); /* Vert arbre */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            letter-spacing: 1px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #2e6b37; /* Vert plus foncé */
+            box-shadow: 0 4px 12px rgba(58, 125, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:active {
+            background-color: #24582d;
+            transform: translateY(0);
+        }
+        
+        .submit-btn i {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .submit-btn:hover i {
+            transform: translateX(4px);
+        }
+           
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Configuration Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+  authDomain: "adash-c842a.firebaseapp.com",
+  databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "adash-c842a",
+  storageBucket: "adash-c842a.firebasestorage.app",
+  messagingSenderId: "710633068131",
+  appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+  measurementId: "G-54PVF2XYKW"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// Authentification
+onAuthStateChanged(auth, async (user) => {
+  const inscriptionBtn = document.getElementById("inscriptionBtn");
+  const userInfoDiv = document.getElementById("userInfo");
+
+  if (user) {
+    // Masquer bouton inscription
+    inscriptionBtn && (inscriptionBtn.style.display = "none");
+
+    // Afficher l'utilisateur connecté
+    userInfoDiv.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img src="default-avatar.png" class="w-8 h-8 rounded-full" alt="Profil">
+        <span class="text-gray-800 font-medium">${user.displayName || "Utilisateur"}</span>
+        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">Déconnexion</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => location.reload());
+    });
+
+    // 🔽 Charger les données de l'utilisateur
+    const userRef = ref(database, `utilisateurs/${user.uid}`);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        afficherDonneesUtilisateur(userData);
+      } else {
+        console.log("Aucune donnée pour cet utilisateur.");
+      }
+    } catch (error) {
+      console.error("Erreur de lecture des données:", error);
+    }
+
+  } else {
+    // Si non connecté
+    inscriptionBtn && (inscriptionBtn.style.display = "block");
+    userInfoDiv.innerHTML = "";
+  }
+});</script>
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Left Side - Illustration -->
+        <div class="lg:w-1/2 bg-gradient-to-br from-green-50 to-emerald-100 bg-agri-pattern flex flex-col items-center justify-center p-8 text-center">
+            <div class="max-w-md">
+                <div class="animate-float mb-8">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMTBhNzUxIiBkPSJNMjU2IDhDMTE5IDggOCAxMTkgOCAyNTZzMTExIDI0OCAyNDggMjQ4IDI0OC0xMTEgMjQ4LTI0OFMzOTMgOCAyNTYgOHptMCA0NDhjLTExMC41IDAtMjAwLTg5LjUtMjAwLTIwMHM4OS41LTIwMCAyMDAtMjAwIDIwMCA4OS41IDIwMCAyMDBzLTg5LjUgMjAwLTIwMCAyMDB6bS0zMi0zMTJjLTE3LjcgMC0zMiAxNC4zLTMyIDMydjE0NGMwIDguOCA3LjIgMTYgMTYgMTZzMTYtNy4yIDE2LTE2VjE3NmMwLTguOC03LjItMTYtMTYtMTZ6bTk2IDBjLTE3LjcgMC0zMiAxNC4zLTMyIDMydjE0NGMwIDguOCA3LjIgMTYgMTYgMTZzMTYtNy4yIDE2LTE2VjE3NmMwLTguOC03LjItMTYtMTYtMTZ6Ii8+PC9zdmc+" class="w-24 h-24 mx-auto mb-4"/>
+                </div>
+                <h1 class="text-4xl font-bold text-green-800 mb-4">ADASH INNOVATION</h1>
+                <p class="text-lg text-green-700 mb-6">Connectez-vous à votre espace agriculteur</p>
+                <div class="bg-white bg-opacity-70 rounded-lg p-6 shadow-sm">
+                    <p class="text-gray-700 mb-4"><i class="fas fa-tractor text-green-500 mr-2"></i> Accédez à vos crédits en cours</p>
+                    <p class="text-gray-700 mb-4"><i class="fas fa-chart-pie text-green-500 mr-2"></i> Suivez vos projets agricoles</p>
+                    <p class="text-gray-700"><i class="fas fa-file-invoice-dollar text-green-500 mr-2"></i> Gérez vos remboursements</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Form -->
+        <div class="lg:w-1/2 flex items-center justify-center p-8">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Connexion</h2>
+                    <p class="text-gray-600 mt-2">Accédez à votre compte pour gérer vos financements agricoles</p>
+                </div>
+
+                <form id="loginForm" class="space-y-6">
+                    <!-- Email -->
+                    <div>
+                        <label for="loginEmail" class="block text-sm font-medium text-gray-700">Email</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input id="loginEmail" name="email" type="email" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500" placeholder="votre@email.com">
+                        </div>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <label for="loginPassword" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        </div>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input id="loginPassword" name="password" type="password" required class="input-focus py-3 pl-10 pr-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500" placeholder="••••••••">
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" id="togglePassword">
+                        </div>        
+                    </div> 
+                        <main class="bouton">
+                            <button type="submit" class="submit-btn">
+                                Connexion <i class="fas fa-check-circle"></i>
+                            </button>
+                         </main> 
+                         <!-- ... ton code HTML au-dessus reste inchangé ... -->
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ SCRIPTS FIREBASE ICI -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // 🔁 Remplace ces infos par celles de ton projet Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+    authDomain: "adash-c842a.firebaseapp.com",
+    databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "adash-c842a",
+    storageBucket: "adash-c842a.appspot.com",
+    messagingSenderId: "710633068131",
+    appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+    measurementId: "G-54PVF2XYKW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // ✅ Gérer le formulaire de connexion
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("✅ Connexion réussie !");
+                window.location.href = "acceuil.html"; // Redirection après connexion
+            } catch (error) {
+                console.error(error);
+                alert("❌ Erreur de connexion : " + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>
+ 
+                    

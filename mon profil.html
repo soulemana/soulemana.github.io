@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace Client</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-item.active {
+            background-color: #f0fdf4;
+            border-left: 4px solid #16a34a;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Configuration Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+  authDomain: "adash-c842a.firebaseapp.com",
+  databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "adash-c842a",
+  storageBucket: "adash-c842a.firebasestorage.app",
+  messagingSenderId: "710633068131",
+  appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+  measurementId: "G-54PVF2XYKW"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// Authentification
+onAuthStateChanged(auth, async (user) => {
+  const inscriptionBtn = document.getElementById("inscriptionBtn");
+  const userInfoDiv = document.getElementById("userInfo");
+
+  if (user) {
+    // Masquer bouton inscription
+    inscriptionBtn && (inscriptionBtn.style.display = "none");
+
+    // Afficher l'utilisateur connecté
+    userInfoDiv.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img src="default-avatar.png" class="w-8 h-8 rounded-full" alt="Profil">
+        <span class="text-gray-800 font-medium">${user.displayName || "Utilisateur"}</span>
+        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">Déconnexion</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => location.reload());
+    });
+
+    // 🔽 Charger les données de l'utilisateur
+    const userRef = ref(database, `utilisateurs/${user.uid}`);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        afficherDonneesUtilisateur(userData);
+      } else {
+        console.log("Aucune donnée pour cet utilisateur.");
+      }
+    } catch (error) {
+      console.error("Erreur de lecture des données:", error);
+    }
+
+  } else {
+    // Si non connecté
+    inscriptionBtn && (inscriptionBtn.style.display = "block");
+    userInfoDiv.innerHTML = "";
+  }
+});onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Redirige vers la page d'inscription si pas connecté
+      window.location.href = "Inscription.html";
+    }
+  });function afficherDonneesUtilisateur(userData) {
+        // Nom et rôle
+        document.querySelector("h3.text-xl.font-bold").innerText = userData.nom || "Utilisateur";
+        document.querySelector("p.text-gray-600.mb-2").innerText = "Membre depuis: " + (userData.dateInscription || "Inconnue");
+        
+        // Rôle et niveau
+        const badgesDiv = document.querySelector("div.flex.items-center > span.bg-green-100");
+        if (badgesDiv) badgesDiv.innerText = userData.role || "Non spécifié";
+
+        const niveauSpan = document.querySelector("div.flex.items-center > span.bg-blue-100");
+        if (niveauSpan) niveauSpan.innerText = userData.niveau ? "Niveau " + userData.niveau : "Niveau inconnu";
+
+        // Formations
+        document.querySelectorAll(".bg-green-50 p.text-2xl")[0].innerText = userData.formationsCompletes || "0";
+        document.querySelectorAll(".bg-blue-50 p.text-2xl")[0].innerText = userData.formationsEnCours || "0";
+
+        // Prêts actifs
+        document.querySelectorAll(".bg-yellow-50 p.text-2xl")[0].innerText = userData.pretsActifs || "0";
+
+        // Points fidélité
+        document.querySelectorAll(".bg-purple-50 p.text-2xl")[0].innerText = userData.pointsFidelite || "0";
+
+        // BONUS : Afficher les formations en cours dynamiquement si tu les stockes en base
+        function afficherDonneesUtilisateur(userData) {
+    document.getElementById("nomUtilisateur").innerText = userData.nom || "Utilisateur";
+    document.getElementById("dateInscription").innerText = "Membre depuis: " + (userData.dateInscription || "Inconnue");
+    document.getElementById("roleUtilisateur").innerText = userData.role || "Rôle inconnu";
+    document.getElementById("niveauUtilisateur").innerText = userData.niveau ? `Niveau ${userData.niveau}` : "Niveau inconnu";
+    
+    document.getElementById("formationsCompletes").innerText = userData.formationsCompletes || 0;
+    document.getElementById("formationsEnCours").innerText = userData.formationsEnCours || 0;
+    document.getElementById("pretsActifs").innerText = userData.pretsActifs || 0;
+    document.getElementById("pointsFidelite").innerText = userData.pointsFidelite || 0;
+}
+// Tu pourrais remplacer tout le bloc HTML statique des formations par une boucle JS ici
+    }
+</script>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Alogo.jpg" alt="Logo ADASH CI" class="h-12 mr-3">
+                <a href="acceuil.html"><h1 class="text-xl font-bold text-green-800">ADASH CI</h1></a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button id="notification-btn" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg z-50">
+                        <div class="p-4 border-b">
+                            <h3 class="font-bold">Notifications</h3>
+                        </div>
+                        <div class="max-h-60 overflow-y-auto">
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-100 border-b">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 text-green-600">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium">Nouvelle session de formation</p>
+                                        <p class="text-xs text-gray-500">Il y a 2 heures</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-100 border-b">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 text-blue-600">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium">Échéance de prêt</p>
+                                        <p class="text-xs text-gray-500">Hier</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-100">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 text-yellow-600">
+                                        <i class="fas fa-certificate"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium">Certificat disponible</p>
+                                        <p class="text-xs text-gray-500">Il y a 3 jours</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <button id="profile-btn" class="flex items-center space-x-2">
+                        <img src="koffi.jpg" alt="Profil" class="w-10 h-10 rounded-full">
+                        <span class="hidden md:inline text-gray-700">Konan A.</span>
+                    </button>
+                    <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Mon profil</a>
+                        <a href="espace invest.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">investissement</a>
+                        <div class="border-t border-gray-200"></div>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6 flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md mb-6 md:mb-0 md:mr-6">
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="mon profil.html" class="sidebar-item active flex items-center px-4 py-3 text-green-700 font-medium rounded-lg">
+                            <i class="fas fa-user mr-3"></i>
+                            <span>Mon profil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-graduation-cap mr-3"></i>
+                            <span>Mes formations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="espace invest.html" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-money-bill-wave mr-3"></i>
+                            <span>Investissement</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#mes-prets" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-hand-holding-usd mr-3"></i>
+                            <span>Mes prêts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#calendrier" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Mon calendrier</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg">
+                            <i class="fas fa-address-book mr-3"></i>
+                            <span>contact</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Dashboard Content -->
+        <main class="flex-1">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-2xl font-bold text-green-800 mb-6">Mon Espace Client</h2>
+                
+                <!-- User Profile Section -->
+                <div class="mb-8">
+                    <div class="flex flex-col md:flex-row items-start md:items-center mb-6">
+                        <img src="koffi.jpg" alt="Photo de profil" class="w-24 h-24 rounded-full mb-4 md:mb-0 md:mr-6">
+                       <div>
+    <h3 id="nomUtilisateur" class="text-xl font-bold text-gray-800"></h3>
+    <p id="dateInscription" class="text-gray-600 mb-2"></p>
+    <div class="flex items-center">
+        <span id="roleUtilisateur" class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-2"></span>
+        <span id="niveauUtilisateur" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded"></span>
+    </div>
+</div>
+
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500 mb-1">Formations complétées</h4>
+                            <p class="text-2xl font-bold text-green-700">5</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500 mb-1">Formations en cours</h4>
+                            <p class="text-2xl font-bold text-blue-700">2</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500 mb-1">Prêts actifs</h4>
+                            <p class="text-2xl font-bold text-yellow-700">1</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500 mb-1">Points de fidélité</h4>
+                            <p class="text-2xl font-bold text-purple-700">1,250</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Formations en cours -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-green-700 mb-4 flex items-center">
+                        <i class="fas fa-graduation-cap mr-2" id="mes formations"></i>
+                        <span>Mes formations en cours</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Formation 1 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 card-hover transition duration-300">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-green-800">Agriculture Biologique</h4>
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">70%</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-3">Formation avancée sur les techniques biologiques</p>
+                            
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                <div class="bg-green-600 h-2.5 rounded-full progress-bar" style="width: 70%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-xs text-gray-500 mb-3">
+                                <span>Module 5/7</span>
+                                <span>Fin: 15/12/2023</span>
+                            </div>
+                            
+                            <button class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded">
+                                Continuer
+                            </button>
+                        </div>
+                        
+                        <!-- Formation 2 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 card-hover transition duration-300">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-green-800">Gestion de l'Eau</h4>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">30%</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-3">Optimisation des ressources en eau</p>
+                            
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                <div class="bg-blue-600 h-2.5 rounded-full progress-bar" style="width: 30%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-xs text-gray-500 mb-3">
+                                <span>Module 2/8</span>
+                                <span>Fin: 20/01/2027</span>
+                            </div>
+                            
+                            <button class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded">
+                                Continuer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prochaines sessions -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-green-700 mb-4 flex items-center">
+                        <i class="fas fa-calendar-alt mr-2" id="calendrier"></i>
+                        <span>Prochaines sessions</span>
+                    </h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Formation</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lieu</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-green-800">Permaculture</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-gray-600">05/12/2025 - 09h00</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-gray-600">Centre ADASH, Abidjan</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-green-600 hover:text-green-800 font-medium">Voir détails</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-green-800">Agroforesterie</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-gray-600">15/06/2026 - 10h00</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-gray-600">Centre ADASH, Abidjan</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-green-600 hover:text-green-800 font-medium">Voir détails</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Mes prêts -->
+                <div id="mes-prets">
+                    <h3 class="text-xl font-semibold text-green-700 mb-4 flex items-center">
+                        <i class="fas fa-hand-holding-usd mr-2"></i>
+                        <span>Mes prêts</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Prêt 1 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 card-hover transition duration-300">
+                            <div class="flex justify-between items-start mb-3">
+                                <h4 class="font-bold text-green-800">Prêt Équipement</h4>
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Actif</span>
+                            </div>   
+                            <div class="space-y-2 mb-4"> 
+    <div class="flex justify-between">
+        <span class="text-gray-600">Montant total:</span>
+        <span class="font-medium" id="montantTotal">1,500,000</span> FCFA
+    </div>
+    <div class="flex justify-between">
+        <span class="text-gray-600">Taux:</span>
+        <span class="font-medium">5%</span>
+    </div>
+    <div class="flex justify-between">
+        <span class="text-gray-600">Échéance:</span>
+        <span class="font-medium">15/06/2024</span>
+    </div>
+    <div class="flex justify-between">
+        <span class="text-gray-600">Prochain paiement:</span>
+        <span class="font-medium" id="prochainPaiement">150,000</span> FCFA (15/12/2025)
+    </div>
+    <div class="flex justify-between">
+        <span class="text-gray-600">Reste à payer:</span>
+        <span class="font-medium" id="resteAPayer">1,500,000</span> FCFA
+    </div>
+                            </div>
+
+                           <button id="payerBtn" class="btn">Payer</button>
+
+                            
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                <div class="bg-green-600 h-2.5 rounded-full progress-bar" style="width: 40%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-xs text-gray-500 mb-3">
+                                <span>40% remboursé</span>
+                                <span>900,000 FCFA restant</span>
+                            </div>
+                            
+                            <button id="payerBtnNow" class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded">
+    Payer maintenant
+</button>
+
+                        </div>
+                        
+                        <!-- Prêt 2 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 card-hover transition duration-300">
+                            <div class="flex justify-between items-start mb-3">
+                                <h4 class="font-bold text-green-800">Prêt Semences</h4>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">En attente</span>
+                            </div>
+                            
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Montant demandé:</span>
+                                    <span class="font-medium">750,000 FCFA</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Statut:</span>
+                                    <span class="font-medium">En évaluation</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Date demande:</span>
+                                    <span class="font-medium">10/03/2025</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-sm text-gray-600 mb-4">
+                                Votre demande est en cours d'évaluation par notre équipe. Vous recevrez une notification dès qu'une décision sera prise.
+                            </div>
+                            
+                            <button class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium py-2 px-4 rounded">
+                                Voir détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ADASH CI</h3>
+                    <p class="text-gray-400">Votre partenaire en agriculture durable</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Centre d'aide</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Nous contacter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Légal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Conditions d'utilisation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Politique de confidentialité</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2025 ADASH CI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle notification dropdown
+        document.getElementById('notification-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('notification-dropdown').classList.toggle('hidden');
+            document.getElementById('profile-dropdown').classList.add('hidden');
+        });
+
+        // Toggle profile dropdown
+        document.getElementById('profile-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('profile-dropdown').classList.toggle('hidden');
+            document.getElementById('notification-dropdown').classList.add('hidden');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            document.getElementById('notification-dropdown').classList.add('hidden');
+            document.getElementById('profile-dropdown').classList.add('hidden');
+        });
+
+        // Active sidebar item
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-item').forEach(i => {
+                    i.classList.remove('active');
+                    i.classList.remove('bg-green-50', 'text-green-700', 'border-l-4', 'border-green-600');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+    <script>// Fonction pour récupérer les données d'une page
+async function recupererDonnees(url) {
+  try {
+    const reponse = await fetch(url);
+    if (!reponse.ok) {
+      throw new Error(`Erreur HTTP ! statut : ${reponse.status}`);
+    }
+    return await reponse.json();
+  } catch (erreur) {
+    console.error("Erreur lors de la récupération des données :", erreur);
+  }
+}
+
+// Fonction pour afficher les données dans une section spécifique
+function afficherDonnees(donnees, idSection) {
+  const section = document.getElementById(idSection);
+  if (section) {
+    section.innerHTML = JSON.stringify(donnees, null, 2);
+  } else {
+    console.error(`Section avec l'ID ${idSection} non trouvée.`);
+  }
+}
+
+// Récupérer et afficher les données pour chaque page
+async function initialiserPages() {
+  const urlFormation = 'https://exemple.com/api/formation';
+  const urlPrets = 'https://exemple.com/api/prets';
+  const urlProfil = 'https://exemple.com/api/profil';
+
+  const [donneesFormation, donneesPrets, donneesProfil] = await Promise.all([
+    recupererDonnees(urlFormation),
+    recupererDonnees(urlPrets),
+    recupererDonnees(urlProfil)
+  ]);
+
+  afficherDonnees(donneesFormation, 'formation');
+  afficherDonnees(donneesPrets, 'prets');
+  afficherDonnees(donneesProfil, 'profil');
+}
+
+// Initialiser les pages au chargement du document
+document.addEventListener('DOMContentLoaded', initialiserPages);
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const resteElem = document.getElementById('resteAPayer');
+    if (!resteElem) {
+        console.error("Élément #resteAPayer non trouvé !");
+        return;
+    }
+
+    function texteEnNombre(str) {
+        return parseInt(str.replace(/[\s,]+/g, ''), 10);
+    }
+
+    let reste = texteEnNombre(resteElem.textContent);
+
+    const btnPayerNow = document.getElementById('payerBtnNow');
+    if (!btnPayerNow) {
+        console.error("Bouton #payerBtnNow non trouvé !");
+        return;
+    }
+
+    btnPayerNow.addEventListener('click', function() {
+        let paiementStr = prompt("Entrez le montant à payer (en FCFA) :");
+        if (paiementStr === null) return; // Annulé
+
+        let paiement = texteEnNombre(paiementStr);
+
+        if (isNaN(paiement) || paiement <= 0) {
+            alert("Montant invalide. Veuillez entrer un nombre positif.");
+            return;
+        }
+
+        if (paiement > reste) {
+            alert("Le montant à payer ne peut pas dépasser le reste dû (" + reste.toLocaleString() + " FCFA).");
+            return;
+        }
+
+        if (confirm("Confirmez-vous le paiement de " + paiement.toLocaleString() + " FCFA ?")) {
+            reste -= paiement;
+            resteElem.textContent = reste.toLocaleString();
+            alert("Paiement de " + paiement.toLocaleString() + " FCFA effectué avec succès.\nReste à payer : " + reste.toLocaleString() + " FCFA.");
+        }
+    });
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADASH CI - Formations en Agriculture Durable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .formation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        #formation-modal {
+            transition: all 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://via.placeholder.com/50" alt="Logo ADASH CI" class="h-12 mr-3">
+                <h1 class="text-xl font-bold text-green-800">ADASH CI</h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="formations.html" class="text-green-600 font-medium border-b-2 border-green-600">Formations</a>
+                <a href="contact.html" class="text-gray-700 hover:text-green-500 font-medium">Contact</a>
+            </nav>
+            <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-white py-2 px-4 shadow-md" id="mobile-menu">
+            <a href="formations.html" class="block py-2 text-green-600 font-medium">Formations</a>
+            <a href="contact.html" class="block py-2 text-gray-700 hover:text-green-500">Contact</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-green-800 mb-4">Nos Formations en Agriculture Durable</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Découvrez notre catalogue complet de formations adaptées à tous les niveaux</p>
+        </div>
+        
+        <!-- Formation Categories -->
+        <div class="mb-12">
+            <h3 class="text-xl font-semibold text-green-700 mb-4">Catégories de formations</h3>
+            <div class="flex flex-wrap gap-2">
+                <button class="category-btn px-4 py-2 bg-green-100 text-green-800 rounded-full hover:bg-green-200">Toutes</button>
+                <button class="category-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200">Agriculture Biologique</button>
+                <button class="category-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200">Gestion des Sols</button>
+                <button class="category-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200">Agroforesterie</button>
+                <button class="category-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200">Permaculture</button>
+                <button class="category-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200">Gestion de l'Eau</button>
+            </div>
+        </div>
+        
+        <!-- Formations Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Formation 1 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300">
+                <img src="https://images.unsplash.com/photo-1535254973040-607b474cb50d?ixlib=rb-4.0.3" alt="Agriculture biologique" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Agriculture Biologique</h3>
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Débutant</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Apprenez les fondamentaux de l'agriculture biologique sans intrants chimiques.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">3 semaines</span>
+                        <span class="text-green-700 font-bold">150 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 2 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300">
+                <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ce?ixlib=rb-4.0.3" alt="Agroforesterie" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Agroforesterie</h3>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Intermédiaire</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Intégration des arbres dans les systèmes agricoles pour une production durable.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">4 semaines</span>
+                        <span class="text-green-700 font-bold">200 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 3 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300">
+                <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3" alt="Gestion de l'eau" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Gestion Durable de l'Eau</h3>
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Avancé</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Techniques innovantes pour une utilisation optimale des ressources en eau.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">2 semaines</span>
+                        <span class="text-green-700 font-bold">120 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 4 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300">
+                <img src="https://images.unsplash.com/photo-1516253593875-bd7ba052fbcb?ixlib=rb-4.0.3" alt="Permaculture" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Permaculture</h3>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Intermédiaire</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Concevoir des systèmes agricoles inspirés des écosystèmes naturels.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">5 semaines</span>
+                        <span class="text-green-700 font-bold">250 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 5 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300">
+                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3" alt="Agriculture de conservation" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Agriculture de Conservation</h3>
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Avancé</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Techniques pour préserver les sols et augmenter la productivité.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">3 semaines</span>
+                        <span class="text-green-700 font-bold">180 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 6 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300">
+                <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3" alt="Marketing des produits bio" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Marketing des Produits Bio</h3>
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Débutant</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Stratégies pour commercialiser efficacement vos produits biologiques.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">2 semaines</span>
+                        <span class="text-green-700 font-bold">100 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formation Details Modal (hidden by default) -->
+        <div id="formation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-green-800" id="modal-title">Formation Title</h3>
+                        <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="md:col-span-2">
+                            <img id="modal-image" src="" alt="" class="w-full h-64 object-cover rounded-lg">
+                        </div>
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">Durée:</span>
+                                    <span id="modal-duration">3 semaines</span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">Niveau:</span>
+                                    <span id="modal-level">Débutant</span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">Prix:</span>
+                                    <span id="modal-price">150 000 FCFA</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-semibold">Prochaine session:</span>
+                                    <span id="modal-date">15 Nov 2023</span>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                                S'inscrire
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-xl font-semibold text-green-700 mb-2">Description</h4>
+                        <p id="modal-description" class="text-gray-700">
+                            Description détaillée de la formation...
+                        </p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-xl font-semibold text-green-700 mb-2">Programme</h4>
+                        <ul id="modal-program" class="list-disc pl-5 text-gray-700 space-y-1">
+                            <li>Module 1: Introduction</li>
+                            <li>Module 2: Techniques de base</li>
+                            <li>Module 3: Mise en pratique</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold text-green-700 mb-2">Formateur</h4>
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Formateur" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h5 class="font-bold" id="modal-trainer">Dr. Jean Kouassi</h5>
+                                <p class="text-gray-600 text-sm" id="modal-trainer-bio">Expert en agriculture durable avec 15 ans d'expérience</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ADASH CI</h3>
+                    <p class="text-gray-400">Leader des formations en agriculture durable en Côte d'Ivoire.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Liens rapides</h4>
+                    <ul class="space-y-2">
+                        <li><a href="formations.html" class="text-green-400">Formations</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-2">Abonnez-vous pour recevoir nos actualités</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Votre email" class="flex-grow px-4 py-2 rounded-l-lg focus:outline-none text-gray-900">
+                        <button class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-r-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2023 ADASH CI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Formation category filter (placeholder functionality)
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => {
+                    b.classList.remove('bg-green-100', 'text-green-800', 'hover:bg-green-200');
+                    b.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
+                });
+                
+                this.classList.remove('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
+                this.classList.add('bg-green-100', 'text-green-800', 'hover:bg-green-200');
+                
+                // In a real implementation, this would filter the formations
+                console.log('Filtering by category:', this.textContent.trim());
+            });
+        });
+        
+        // Formation modal (placeholder functionality)
+        document.querySelectorAll('.formation-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.getElementById('formation-modal').classList.remove('hidden');
+                
+                // In a real implementation, this would populate the modal with the correct data
+                // based on which card was clicked
+            });
+        });
+        
+        // Close modal
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('formation-modal').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

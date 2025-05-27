@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADASH CI - Espace Investisseurs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .investment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%);
+            z-index: -1;
+        }
+        .floating-label {
+            position: absolute;
+            pointer-events: none;
+            left: 12px;
+            top: 12px;
+            transition: 0.2s ease all;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .form-input:focus ~ .floating-label,
+        .form-input:not(:placeholder-shown) ~ .floating-label {
+            top: -8px;
+            left: 10px;
+            font-size: 12px;
+            background-color: white;
+            padding: 0 4px;
+            color: #16a34a;
+        }
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background-color: #e5e7eb;
+        }
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            background-color: #16a34a;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+ <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Configuration Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+  authDomain: "adash-c842a.firebaseapp.com",
+  databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "adash-c842a",
+  storageBucket: "adash-c842a.firebasestorage.app",
+  messagingSenderId: "710633068131",
+  appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+  measurementId: "G-54PVF2XYKW"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// Authentification
+onAuthStateChanged(auth, async (user) => {
+  const inscriptionBtn = document.getElementById("inscriptionBtn");
+  const userInfoDiv = document.getElementById("userInfo");
+
+  if (user) {
+    // Masquer bouton inscription
+    inscriptionBtn && (inscriptionBtn.style.display = "none");
+
+    // Afficher l'utilisateur connecté
+    userInfoDiv.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img src="default-avatar.png" class="w-8 h-8 rounded-full" alt="Profil">
+        <span class="text-gray-800 font-medium">${user.displayName || "Utilisateur"}</span>
+        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">Déconnexion</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => location.reload());
+    });
+
+    // 🔽 Charger les données de l'utilisateur
+    const userRef = ref(database, `utilisateurs/${user.uid}`);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        afficherDonneesUtilisateur(userData);
+      } else {
+        console.log("Aucune donnée pour cet utilisateur.");
+      }
+    } catch (error) {
+      console.error("Erreur de lecture des données:", error);
+    }
+
+  } else {
+    // Si non connecté
+    inscriptionBtn && (inscriptionBtn.style.display = "block");
+    userInfoDiv.innerHTML = "";
+  }
+});onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Redirige vers la page d'inscription si pas connecté
+      window.location.href = "Inscription.html";
+    }
+  });
+</script>
+
+
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Alogo.jpg" alt="Logo ADASH CI" class="h-12 mr-3">
+                <a href="acceuil.html"><h1 class="text-xl font-bold text-green-800">ADASH CI</h1></a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button id="notification-btn" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button id="profile-btn" class="flex items-center space-x-2">
+                        <img src="invest.jpg" alt="Profil" class="w-10 h-10 rounded-full">
+                        <span class="hidden md:inline text-gray-700">Soulemana H.</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="acceuil.html" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                        <i class="fas fa-home mr-2"></i>
+                        Accueil
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Espace Investisseurs</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Espace Investisseurs</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Investissez dans des projets agricoles durables et bénéficiez de rendements attractifs tout en ayant un impact social positif.
+            </p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Rendement moyen</p>
+                        <h3 class="text-2xl font-bold text-gray-800">12.5%</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-project-diagram text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Projets financés</p>
+                        <h3 class="text-2xl font-bold text-gray-800">247</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-hand-holding-usd text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Montant investi</p>
+                        <h3 class="text-2xl font-bold text-gray-800">4.6M FCFA</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-users text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Agriculteurs soutenus</p>
+                        <h3 class="text-2xl font-bold text-gray-800">1,850</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investment Opportunities -->
+        <div class="mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-green-700" id="disponible">Opportunités d'investissement</h2>
+                <div class="relative">
+                    <select class="bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-lg focus:outline-none focus:border-green-500">
+                        <option>Tous les projets</option>
+                        <option>Agriculture biologique</option>
+                        <option>Agroforesterie</option>
+                        <option>Élevage durable</option>
+                        <option>Transformation</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project Card 1 -->
+                <div class="investment-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                    <div class="relative">
+                        <img src="cacao.jpg" alt="Projet agricole" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">Nouveau</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Plantation de cacao bio</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Agroécologie</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Extension d'une plantation de cacao biologique dans la région de San Pedro avec certification équitable.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Montant recherché</span>
+                                <span>7,5MFCFA</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 65%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>65% financé</span>
+                                <span>255,000 FCFA restants</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between text-sm mb-4">
+                            <div>
+                                <p class="text-gray-500">Durée</p>
+                                <p class="font-medium">5 ans</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Rendement</p>
+                                <p class="font-medium text-green-600">11.5%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Risque</p>
+                                <p class="font-medium">Moyen</p>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                            <i class="fas fa-eye mr-2"></i> Voir le projet
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Project Card 2 -->
+                <div class="investment-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                    <div class="relative">
+                        <img src="mangues.jpeg" alt="Projet agricole" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Unité de transformation de mangues</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Transformation</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Création d'une unité de séchage et transformation de mangues pour l'exportation à Bouaké.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Montant recherché</span>
+                                <span>1,2M FCFA</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 42%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>42% financé</span>
+                                <span>69,600FCFA restants</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between text-sm mb-4">
+                            <div>
+                                <p class="text-gray-500">Durée</p>
+                                <p class="font-medium">4 ans</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Rendement</p>
+                                <p class="font-medium text-green-600">13.2%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Risque</p>
+                                <p class="font-medium">Élevé</p>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                            <i class="fas fa-eye mr-2"></i> Voir le projet
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Project Card 3 -->
+                <div class="investment-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                    <div class="relative">
+                        <img src="chicken.jpeg" alt="Projet agricole" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">Populaire</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Élevage avicole durable</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Élevage</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Développement d'un élevage de poulets de chair en agriculture biologique à Yamoussoukro.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Montant recherché</span>
+                                <span>450,000 FCFA</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 88%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>88% financé</span>
+                                <span>50,400 FCFA restants</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between text-sm mb-4">
+                            <div>
+                                <p class="text-gray-500">Durée</p>
+                                <p class="font-medium">3 ans</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Rendement</p>
+                                <p class="font-medium text-green-600">10.8%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Risque</p>
+                                <p class="font-medium">Faible</p>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                            <i class="fas fa-eye mr-2"></i> Voir le projet
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <button class="bg-white border border-green-600 text-green-600 hover:bg-green-50 font-medium py-2 px-6 rounded-lg transition duration-300">
+                    Voir plus de projets
+                </button>
+            </div>
+        </div>
+
+        <!-- How it Works -->
+        <div class="bg-white rounded-xl shadow-md p-8 mb-16">
+            <h2 class="text-2xl font-semibold text-green-700 mb-8 text-center"id="comment-invest">Comment investir avec ADASH CI</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-search text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Choisissez un projet</h3>
+                    <p class="text-gray-600">Parcourez notre plateforme et sélectionnez un projet agricole qui correspond à vos critères d'investissement.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-hand-holding-usd text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">2. Investissez</h3>
+                    <p class="text-gray-600">Définissez le montant de votre investissement et validez votre participation via notre plateforme sécurisée.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Suivez et bénéficiez</h3>
+                    <p class="text-gray-600">Recevez des rapports réguliers et percevez vos rendements selon les termes convenus.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investor Benefits -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <h2 class="text-2xl font-semibold text-green-700 mb-6">Avantages pour les investisseurs</h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <div class="bg-green-100 p-2 rounded-full mr-4 mt-1">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Rendements attractifs</h3>
+                            <p class="text-gray-600">Des taux de rendement compétitifs, généralement entre 8% et 15% selon les projets.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-green-100 p-2 rounded-full mr-4 mt-1">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Impact social mesurable</h3>
+                            <p class="text-gray-600">Contribuez directement au développement de l'agriculture durable et à l'amélioration des conditions de vie des agriculteurs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-green-100 p-2 rounded-full mr-4 mt-1">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Transparence totale</h3>
+                            <p class="text-gray-600">Accès à des rapports détaillés sur l'utilisation des fonds et l'évolution des projets.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-green-100 p-2 rounded-full mr-4 mt-1">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Diversification</h3>
+                            <p class="text-gray-600">Investissez dans différents types de projets agricoles pour diversifier votre portefeuille.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <h2 class="text-2xl font-semibold text-green-700 mb-6">Devenir investisseur</h2>
+                
+                <form id="investor-form" class="space-y-6">
+                    <div class="relative">
+                        <input type="text" id="investor-name" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" ">
+                        <label for="investor-name" class="floating-label">Nom complet</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <input type="email" id="investor-email" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" ">
+                        <label for="investor-email" class="floating-label">Adresse email</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <input type="tel" id="investor-phone" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" ">
+                        <label for="investor-phone" class="floating-label">Téléphone</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="investor-type" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 appearance-none">
+                            <option value="" disabled selected></option>
+                            <option value="individual">Particulier</option>
+                            <option value="company">Entreprise</option>
+                            <option value="institution">Institution financière</option>
+                            <option value="other">Autre</option>
+                        </select>
+                        <label for="investor-type" class="floating-label">Type d'investisseur</label>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="investment-amount" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 appearance-none">
+                            <option value="" disabled selected></option>
+                            <option value="1-5k">1MFCFA - 5MFCFA</option>
+                            <option value="5-20k">5MFCFA - 20MFCFA</option>
+                            <option value="20-50k">20MFCFA - 50MFCFA</option>
+                            <option value="50k+">Plus de 50MFCFA</option>
+                        </select>
+                        <label for="investment-amount" class="floating-label">Montant d'investissement envisagé</label>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input id="investor-consent" type="checkbox" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500">
+                        <label for="investor-consent" class="ml-2 text-sm text-gray-600">
+                            J'accepte de recevoir des informations sur les opportunités d'investissement.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-user-tie mr-2"></i>
+                        Devenir investisseur
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-xl shadow-lg p-8 text-white mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Témoignages d'investisseurs</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="meuf invest.jpeg" alt="Investisseur" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Marie Koffi</h4>
+                            <p class="text-green-200 text-sm">Investisseuse depuis 2025</p>
+                        </div>
+                    </div>
+                    <p class="italic">"J'ai investi dans 3 projets avec ADASH CI et je suis très satisfaite des rendements et de la transparence. C'est gratifiant de voir l'impact concret de mes investissements."</p>
+                    <div class="flex mt-3 text-yellow-300">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="investman1.jpeg" alt="Investisseur" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Jean-Baptiste Yao</h4>
+                            <p class="text-green-200 text-sm">Investisseur depuis 2025</p>
+                        </div>
+                    </div>
+                    <p class="italic">"En tant qu'expatrié, je cherchais un moyen d'investir dans mon pays d'origine. ADASH CI m'a offert cette opportunité avec des projets bien sélectionnés et un accompagnement professionnel."</p>
+                    <div class="flex mt-3 text-yellow-300">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="jeandupont.jpeg" alt="Investisseur" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Jean-Dupont</h4>
+                            <p class="text-green-200 text-sm">Investisseur institutionnel</p>
+                        </div>
+                    </div>
+                    <p class="italic">"Notre fonds d'investissement travaille avec ADASH CI depuis 2025. Leur expertise dans la sélection de projets agricoles durables est remarquable. Un partenaire de confiance."</p>
+                    <div class="flex mt-3 text-yellow-300">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-green-800 mb-4">Prêt à investir dans l'agriculture de demain ?</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">Rejoignez notre communauté d'investisseurs engagés et bénéficiez d'un accompagnement personnalisé.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="Inscription.html" class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-user-tie mr-2"></i>
+                    Ouvrir un compte investisseur
+                </a>
+                <a href="contact.html" class="bg-white border border-green-600 text-green-600 hover:bg-green-50 font-medium py-3 px-8 rounded-lg transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-phone-alt mr-2"></i>
+                    Parler à un conseiller
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ADASH CI</h3>
+                    <p class="text-gray-400">Financement participatif pour une agriculture durable en Côte d'Ivoire.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Investisseurs</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#comment-invest" class="text-gray-400 hover:text-white">Comment investir</a></li>
+                        <li><a href="#disponible" class="text-gray-400 hover:text-white">Projets disponibles</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Rendements</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ Investisseurs</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Entreprises</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Devenir partenaire</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Solutions corporate</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Investissement institutionnel</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Responsabilité sociale</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Légal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Mentions légales</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">CGU Investisseurs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Informations réglementaires</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2025 ADASH CI. Tous droits réservés. Agrément XYZ par la BCEAO.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Investor form submission
+        document.getElementById('investor-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('investor-name').value;
+            const email = document.getElementById('investor-email').value;
+            const investorType = document.getElementById('investor-type').value;
+            
+            // Simple validation
+            if (!name || !email || !investorType) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            // Show success message
+            alert('Merci pour votre intérêt, ' + name + '! Notre équipe investisseurs vous contactera bientôt à l\'adresse ' + email + '.');
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Animate progress bars on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-value');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const width = entry.target.style.width;
+                        entry.target.style.width = '0%';
+                        setTimeout(() => {
+                            entry.target.style.width = width;
+                        }, 100);
+                    }
+                });
+            }, {threshold: 0.1});
+            
+            progressBars.forEach(bar => {
+                observer.observe(bar);
+            });
+        });
+        
+        // Floating labels
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('.floating-label').classList.add('text-green-600');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.querySelector('.floating-label').classList.remove('text-green-600');
+                }
+            });
+        });
+    </script> <script>// Fonction pour récupérer les données d'une page
+async function recupererDonnees(url) {
+  try {
+    const reponse = await fetch(url);
+    if (!reponse.ok) {
+      throw new Error(`Erreur HTTP ! statut : ${reponse.status}`);
+    }
+    return await reponse.json();
+  } catch (erreur) {
+    console.error("Erreur lors de la récupération des données :", erreur);
+  }
+}
+
+// Fonction pour afficher les données dans une section spécifique
+function afficherDonnees(donnees, idSection) {
+  const section = document.getElementById(idSection);
+  if (section) {
+    section.innerHTML = JSON.stringify(donnees, null, 2);
+  } else {
+    console.error(`Section avec l'ID ${idSection} non trouvée.`);
+  }
+}
+
+// Récupérer et afficher les données pour chaque page
+async function initialiserPages() {
+  const urlFormation = 'https://exemple.com/api/formation';
+  const urlPrets = 'https://exemple.com/api/prets';
+  const urlProfil = 'https://exemple.com/api/profil';
+
+  const [donneesFormation, donneesPrets, donneesProfil] = await Promise.all([
+    recupererDonnees(urlFormation),
+    recupererDonnees(urlPrets),
+    recupererDonnees(urlProfil)
+  ]);
+
+  afficherDonnees(donneesFormation, 'formation');
+  afficherDonnees(donneesPrets, 'prets');
+  afficherDonnees(donneesProfil, 'profil');
+}
+
+// Initialiser les pages au chargement du document
+document.addEventListener('DOMContentLoaded', initialiserPages);
+</script>
+   
+</body>
+</html>

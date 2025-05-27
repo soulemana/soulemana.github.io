@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ADASH CI - Formations en Agriculture Durable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+        .formation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+
+<header class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <img src="Alogo.jpg" alt="Logo ADASH CI" class="h-12" />
+            <a href="acceuil.html" class="text-xl font-bold text-green-800">ADASH CI</a>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+            <a href="formations.html" class="text-green-600 font-medium border-b-2 border-green-600">Formations</a>
+        </nav>
+        <button class="md:hidden text-gray-700" id="mobile-menu-button">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="md:hidden hidden bg-white py-2 px-4 shadow-md" id="mobile-menu">
+        <a href="formations.html" class="block py-2 text-green-600 font-medium">Formations</a>
+    </div>
+
+    <!-- Info utilisateur -->
+    <div class="container mx-auto px-4 py-2 flex justify-end" id="userInfo"></div>
+</header>
+
+<main class="container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-green-800 mb-4">Nos Formations en Agriculture Durable</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+            Découvrez notre catalogue complet de formations adaptées à tous les niveaux
+        </p>
+    </div>
+
+    <!-- Formations Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Exemple formation avec data-formation-id et prix -->
+        <a href="agr bio.html" class="formation-link" data-formation-id="agr_bio" data-titre="Agriculture Biologique" data-prix="0">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300 cursor-pointer">
+                <img src="agri bio.jpeg" alt="Agriculture biologique" class="w-full h-48 object-cover" />
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Agriculture Biologique</h3>
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Débutant</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        Apprenez les fondamentaux de l'agriculture biologique sans intrants chimiques.
+                    </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">3 semaines</span>
+                        <span class="text-green-700 font-bold">Gratuit</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="agro forest.html" class="formation-link" data-formation-id="agroforesterie" data-titre="Agroforesterie" data-prix="5000">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300 cursor-pointer">
+                <img src="agroforest.jpeg" alt="Agroforesterie" class="w-full h-48 object-cover" />
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Agroforesterie</h3>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Intermédiaire</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        Intégration des arbres dans les systèmes agricoles pour une production durable.
+                    </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">4 semaines</span>
+                        <span class="text-green-700 font-bold">5 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="gestio_eau.html" class="formation-link" data-formation-id="gestion_eau" data-titre="Gestion Durable de l'Eau" data-prix="20000">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300 cursor-pointer">
+                <img src="gde.jpeg" alt="Gestion de l'eau" class="w-full h-48 object-cover" />
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Gestion Durable de l'Eau</h3>
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Avancé</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        Techniques innovantes pour une utilisation optimale des ressources en eau.
+                    </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">7 semaines</span>
+                        <span class="text-green-700 font-bold">20 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="Permacult.html" class="formation-link" data-formation-id="permaculture" data-titre="Permaculture" data-prix="7500">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300 cursor-pointer">
+                <img src="perma.jpg" alt="Permaculture" class="w-full h-48 object-cover" />
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Permaculture</h3>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Intermédiaire</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        Concevoir des systèmes agricoles inspirés des écosystèmes naturels.
+                    </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">5 semaines</span>
+                        <span class="text-green-700 font-bold">7 500 FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="agri_conserv.html" class="formation-link" data-formation-id="agri_conserv" data-titre="Agriculture de Conservation" data-prix="6600">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300 cursor-pointer">
+                <img
+                    src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3"
+                    alt="Agriculture de conservation"
+                    class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Agriculture de Conservation</h3>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Intermédiaire</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Techniques pour préserver les sols et augmenter la productivité.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">6 semaines</span>
+                        <span class="text-green-700 font-bold">6 600 FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="Marketing.html" class="formation-link" data-formation-id="marketing" data-titre="Marketing des Produits Bio" data-prix="20000">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md formation-card transition duration-300 cursor-pointer">
+                <img
+                    src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3"
+                    alt="Marketing des produits bio"
+                    class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-green-800">Marketing des Produits Bio</h3>
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Avancé</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Stratégies pour commercialiser efficacement vos produits biologiques.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-700 font-bold">24 semaines</span>
+                        <span class="text-green-700 font-bold">20 000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</main>
+
+<footer class="bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4">ADASH CI</h3>
+                <p class="text-gray-400">Leader des formations en agriculture durable en Côte d'Ivoire.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Liens rapides</h4>
+                <ul class="space-y-2">
+                    <li><a href="formations.html" class="text-green-400">Formations</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Newsletter</h4>
+                <p class="text-gray-400 mb-4">Inscrivez-vous pour recevoir les dernières mises à jour.</p>
+                <form>
+                    <input type="email" placeholder="Votre email" class="p-2 rounded text-gray-900 w-full" />
+                    <button type="submit" class="mt-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white w-full">S'inscrire</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+  authDomain: "adash-c842a.firebaseapp.com",
+  databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "adash-c842a",
+  storageBucket: "adash-c842a.firebasestorage.app",
+  messagingSenderId: "710633068131",
+  appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+  measurementId: "G-54PVF2XYKW"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  const userInfoDiv = document.getElementById("userInfo");
+  const formationsLinks = document.querySelectorAll(".formation-link");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // Afficher nom utilisateur et bouton déconnexion
+      userInfoDiv.innerHTML = `
+        <div class="flex items-center space-x-3">
+          <img src="default-avatar.png" class="w-8 h-8 rounded-full" alt="Profil" />
+          <span class="text-gray-800 font-medium">${user.displayName || "Utilisateur"}</span>
+          <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">Déconnexion</button>
+        </div>
+      `;
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        signOut(auth).then(() => location.reload());
+      });
+
+      // Récupérer données utilisateur dans la base
+      const userRef = ref(database, `utilisateurs/${user.uid}`);
+      try {
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          afficherFormationsSuivies(userData.formationsSuivies || {});
+        } else {
+          console.log("Pas de données utilisateur.");
+        }
+      } catch (error) {
+        console.error("Erreur lecture données utilisateur", error);
+      }
+
+    } else {
+      userInfoDiv.innerHTML = `<a href="Inscription.html" id="inscriptionBtn" class="text-green-600 font-bold">Inscription / Connexion</a>`;
+    }
+  });
+
+  // Affiche badge "Déjà suivi" et désactive clic
+  function afficherFormationsSuivies(formationsSuivies) {
+  formationsLinks.forEach(link => {
+    const id = link.dataset.formationId;
+    if (formationsSuivies[id]) {
+      // Badge "Déjà suivi"
+      const badge = document.createElement("span");
+      badge.textContent = "Déjà suivi";
+      badge.className = "ml-2 text-sm text-white bg-gray-600 px-2 py-0.5 rounded";
+      const title = link.querySelector("h3");
+      if (!title.querySelector("span")) {
+        title.appendChild(badge);
+      }
+
+      // Laisse le lien actif mais marque visuellement
+      link.style.border = "2px solid #4ade80"; // Vert clair
+    }
+  });
+}
+
+  // Gestion clic sur formation
+  formationsLinks.forEach(link => {
+  link.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Veuillez vous connecter ou vous inscrire pour accéder à cette formation.");
+      window.location.href = "Inscription.html";
+      return;
+    }
+
+    const formationId = link.dataset.formationId;
+    const titre = link.dataset.titre;
+    const prix = parseInt(link.dataset.prix);
+
+    const userRef = ref(database, `utilisateurs/${user.uid}`);
+    const snapshot = await get(userRef);
+    let userData = {};
+    if (snapshot.exists()) userData = snapshot.val();
+
+    const suivi = userData.formationsSuivies || {};
+
+    if (suivi[formationId]) {
+      alert(`Vous avez déjà suivi la formation "${titre}".`);
+      // Autoriser l'accès à nouveau à la formation
+      window.location.href = link.href;
+      return;
+    }
+
+    if (prix > 0) {
+      alert(`Merci pour votre paiement de ${prix.toLocaleString()} FCFA pour la formation "${titre}".`);
+      // À remplacer plus tard par un vrai module de paiement
+    } else {
+      alert(`La formation "${titre}" est gratuite. Vous y avez accès immédiatement.`);
+    }
+
+    // Enregistrer que la formation a été suivie
+    suivi[formationId] = true;
+    await update(userRef, { formationsSuivies: suivi });
+
+    // Affichage visuel mis à jour
+    afficherFormationsSuivies(suivi);
+
+    // ✅ Redirection après message
+    window.location.href = link.href;
+  });
+});
+
+
+  // Gestion menu mobile
+  const mobileMenuBtn = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+  mobileMenuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+   
+</script> <script>// Fonction pour récupérer les données d'une page
+async function recupererDonnees(url) {
+  try {
+    const reponse = await fetch(url);
+    if (!reponse.ok) {
+      throw new Error(`Erreur HTTP ! statut : ${reponse.status}`);
+    }
+    return await reponse.json();
+  } catch (erreur) {
+    console.error("Erreur lors de la récupération des données :", erreur);
+  }
+}
+
+// Fonction pour afficher les données dans une section spécifique
+function afficherDonnees(donnees, idSection) {
+  const section = document.getElementById(idSection);
+  if (section) {
+    section.innerHTML = JSON.stringify(donnees, null, 2);
+  } else {
+    console.error(`Section avec l'ID ${idSection} non trouvée.`);
+  }
+}
+
+// Récupérer et afficher les données pour chaque page
+async function initialiserPages() {
+  const urlFormation = 'https://exemple.com/api/formation';
+  const urlPrets = 'https://exemple.com/api/prets';
+  const urlProfil = 'https://exemple.com/api/profil';
+
+  const [donneesFormation, donneesPrets, donneesProfil] = await Promise.all([
+    recupererDonnees(urlFormation),
+    recupererDonnees(urlPrets),
+    recupererDonnees(urlProfil)
+  ]);
+
+  afficherDonnees(donneesFormation, 'formation');
+  afficherDonnees(donneesPrets, 'prets');
+  afficherDonnees(donneesProfil, 'profil');
+}
+
+// Initialiser les pages au chargement du document
+document.addEventListener('DOMContentLoaded', initialiserPages);
+</script>
+
+</body>
+</html>

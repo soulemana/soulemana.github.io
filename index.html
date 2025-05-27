@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADASH CI - Plateforme de Formation Agricole</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #2e7d32 0%, #7cb342 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #2e7d32;
+            transition: width .3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans"> <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Configuration Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCd1ud98HUR9CIgVgTw4Osvri4f5uXwp2A",
+  authDomain: "adash-c842a.firebaseapp.com",
+  databaseURL: "https://adash-c842a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "adash-c842a",
+  storageBucket: "adash-c842a.firebasestorage.app",
+  messagingSenderId: "710633068131",
+  appId: "1:710633068131:web:1cabdea27af12078ac4a56",
+  measurementId: "G-54PVF2XYKW"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// Authentification
+onAuthStateChanged(auth, async (user) => {
+  const inscriptionBtn = document.getElementById("inscriptionBtn");
+  const userInfoDiv = document.getElementById("userInfo");
+
+  if (user) {
+    // Masquer bouton inscription
+    inscriptionBtn && (inscriptionBtn.style.display = "none");
+
+    // Afficher l'utilisateur connecté
+    userInfoDiv.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img src="default-avatar.png" class="w-8 h-8 rounded-full" alt="Profil">
+        <span class="text-gray-800 font-medium">${user.displayName || "Utilisateur"}</span>
+        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">Déconnexion</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => location.reload());
+    });
+
+    // 🔽 Charger les données de l'utilisateur
+    const userRef = ref(database, `utilisateurs/${user.uid}`);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        afficherDonneesUtilisateur(userData);
+      } else {
+        console.log("Aucune donnée pour cet utilisateur.");
+      }
+    } catch (error) {
+      console.error("Erreur de lecture des données:", error);
+    }
+
+  } else {
+    // Si non connecté
+    inscriptionBtn && (inscriptionBtn.style.display = "block");
+    userInfoDiv.innerHTML = "";
+  }
+});
+let utilisateurConnecte = null;
+
+onAuthStateChanged(auth, (user) => {
+  utilisateurConnecte = user;
+});
+
+ // Liens protégés
+    const liensProteges = [
+  { id: "linkFormations", url: "for&cont.html" },
+  { id: "linkProfil", url: "mon profil.html" },
+  { id: "linkInvestir", url: "invest.html" },
+  { id: "linkpret", url: "prêt.html" }
+];
+
+liensProteges.forEach(({ id, url }) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (utilisateurConnecte) {
+        window.location.href = url;
+      } else {
+        alert("Vous devez être connecté pour accéder à cette page.");
+        window.location.href = "Inscription.html";
+      }
+    });
+  }
+});
+
+</script>
+
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Alogo.jpg" alt="AgriForm CI Logo" class="h-10 mr-3">
+               <a href="acceuil.html"><span class="text-xl font-bold text-green-800">ADASH CI</span></a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-6">
+                <a href="acceuil.html" class="nav-link text-gray-700 font-medium">Accueil</a>
+                <a href="#" id="linkFormations" class="nav-link text-gray-700 font-medium">Formations</a>
+                <a href="#" id="linkpret" class="nav-link text-gray-700 font-medium">Prêts Agricoles</a>
+                <a href="#" id="linkProfil" class="nav-link text-gray-700 font-medium">Mon profil</a>
+                <a href="#" id="linkInvestir" class="nav-link text-gray-700 font-medium">Investir</a>
+                <a href="contact.html" class="nav-link text-gray-700 font-medium">Contact</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a id="inscriptionBtn" href="Inscription.html" class="hidden md:block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition">
+  Inscription
+</a>
+
+<div id="userInfo" class="md:flex items-center space-x-4"></div>
+
+
+                <button class="md:hidden text-gray-700" title="..">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white">
+        <div class="container mx-auto px-4 py-16 md:py-24">
+            <div class="max-w-3xl fade-in">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Formation et Financement pour les Agriculteurs Ivoiriens</h1>
+                <p class="text-xl mb-8 opacity-90">Développez vos compétences agricoles et accédez à des prêts adaptés pour booster votre production.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="for&cont.html" class="bg-white text-green-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-bold text-center transition">Démarrer une Formation</a>
+                    <a href="prêt.html" class="border-2 border-white hover:bg-white hover:bg-opacity-10 px-6 py-3 rounded-lg font-bold text-center transition">Demander un Prêt</a>
+                    <a href="espace invest.html" class="border-2 border-white hover:bg-white hover:bg-opacity-10 px-6 py-3 rounded-lg font-bold text-center transition">Faire un investissement</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="fade-in" style="animation-delay: 0.2s">
+                    <div class="text-4xl font-bold text-green-700 mb-2">500+</div>
+                    <div class="text-gray-600">Agriculteurs Formés</div>
+                </div>
+                <div class="fade-in" style="animation-delay: 0.4s">
+                    <div class="text-4xl font-bold text-green-700 mb-2">120+</div>
+                    <div class="text-gray-600">Formations Disponibles</div>
+                </div>
+                <div class="fade-in" style="animation-delay: 0.6s">
+                    <div class="text-4xl font-bold text-green-700 mb-2">500 000</div>
+                    <div class="text-gray-600">FCFA de Prêts Moyens</div>
+                </div>
+                <div class="fade-in" style="animation-delay: 0.8s">
+                    <div class="text-4xl font-bold text-green-700 mb-2">85%</div>
+                    <div class="text-gray-600">Taux de Réussite</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Nos Formations Populaires</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Des formations pratiques adaptées aux besoins des petits agriculteurs ivoiriens.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Course 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover transition duration-300 fade-in">
+                    <img src="cacao.jpg" alt="Culture du Cacao" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Débutant</span>
+                            <span class="text-yellow-500">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="text-gray-500 ml-1">(24)</span>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Culture Optimale du Cacao</h3>
+                        <p class="text-gray-600 mb-4">Maîtrisez les techniques modernes pour augmenter votre rendement en cacao.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-700 font-bold">Gratuit</span>
+                            <a href="for&cont.html" class="text-green-600 hover:text-green-800 font-medium flex items-center">
+                                Voir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover transition duration-300 fade-in" style="animation-delay: 0.2s">
+                    <img src="ga.avif" alt="Agriculture Biologique" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Débutant</span>
+                            <span class="text-yellow-500">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <span class="text-gray-500 ml-1">(18)</span>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Agriculture Biologique</h3>
+                        <p class="text-gray-600 mb-4">Apprenez les fondamentaux de l'agriculture biologique sans intrants chimiques.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-700 font-bold">Gratuit</span>
+                            <a href="for&cont.html#modal-title" class="text-green-600 hover:text-green-800 font-medium flex items-center">
+                                Voir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover transition duration-300 fade-in" style="animation-delay: 0.4s">
+                    <img src="gest expo.jpg" alt="Gestion d'Exploitation" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Avancé</span>
+                            <span class="text-yellow-500">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="text-gray-500 ml-1">(32)</span>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Gestion d'Exploitation Agricole</h3>
+                        <p class="text-gray-600 mb-4">Optimisez la gestion de votre exploitation pour maximiser vos profits.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-700 font-bold">20,000 FCFA</span>
+                            <a href="for&cont.html" class="text-green-600 hover:text-green-800 font-medium flex items-center">
+                                Voir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="for&cont.html" class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold transition">
+                    Voir Toutes les Formations <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loan Services -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-12 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Financez Votre Projet Agricole</h2>
+                    <p class="text-gray-600 mb-6">Nous proposons des prêts adaptés aux petits agriculteurs avec des conditions avantageuses et un accompagnement personnalisé.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Taux d'intérêt réduits</h4>
+                                <p class="text-gray-600">Des taux spécialement négociés pour les agriculteurs.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Paiements flexibles</h4>
+                                <p class="text-gray-600">Adaptés aux cycles de récolte et aux saisons agricoles.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Délais allongés</h4>
+                                <p class="text-gray-600">Jusqu'à 3 ans pour rembourser selon votre projet.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="prêt.html" class="mt-8 inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold transition">
+                        En savoir plus sur les prêts <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <div class="md:w-1/2 fade-in" style="animation-delay: 0.3s">
+                    <div class="bg-green-50 rounded-xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Simulateur de Prêt Agricole</h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label for="loan-amount" class="block text-gray-700 font-medium mb-2">Montant souhaité (FCFA)</label>
+                                <div class="flex items-center">
+                                    <input type="range" id="loan-amount" min="500000" max="5000000" step="50000" value="1500000" class="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer">
+                                    <span id="loan-amount-value" class="ml-4 text-green-700 font-bold">1,500,000</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="loan-duration" class="block text-gray-700 font-medium mb-2">Durée (mois)</label>
+                                <div class="flex items-center">
+                                    <input type="range" id="loan-duration" min="6" max="36" step="1" value="12" class="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer">
+                                    <span id="loan-duration-value" class="ml-4 text-green-700 font-bold">12</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-green-100 rounded-lg p-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-700">Mensualité estimée:</span>
+                                    <span id="monthly-payment" class="font-bold text-green-700">145,833 FCFA</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-700">Taux d'intérêt:</span>
+                                    <span class="font-bold text-green-700">8% annuel</span>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold transition">
+                                Demander un Prêt <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Témoignages d'Agriculteurs</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Découvrez ce que disent les agriculteurs qui ont utilisé notre plateforme.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md fade-in">
+                    <div class="flex items-center mb-4">
+                        <img src="koffi.jpg" alt="Kadidiatou" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Koffi K.</h4>
+                            <p class="text-gray-600 text-sm">Producteur de cacao, Soubré</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Grâce à la formation sur la culture du cacao, j'ai pu augmenter ma production de 40% en une seule saison. Je recommande vivement ADASH CI!"</p>
+                    <div class="text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md fade-in" style="animation-delay: 0.2s">
+                    <div class="flex items-center mb-4">
+                        <img src="boura.jpg" alt="Moussa" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Auriol H.</h4>
+                            <p class="text-gray-600 text-sm">Maraîcher, Bouaké</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Le prêt que j'ai obtenu m'a permis d'acheter un système d'irrigation moderne. Maintenant, je peux cultiver toute l'année sans dépendre de la pluie."</p>
+                    <div class="text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md fade-in" style="animation-delay: 0.4s">
+                    <div class="flex items-center mb-4">
+                        <img src="moussa.jpg" alt="Aminata" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Boura B.</h4>
+                            <p class="text-gray-600 text-sm">Producteur de mil, Korhogo</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Les formations en gestion d'exploitation ont transformé ma façon de travailler. Je suis maintenant plus organisée et mes revenus ont doublé."</p>
+                    <div class="text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-green-700 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Prêt à Transformer Votre Exploitation Agricole?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">Rejoignez des milliers d'agriculteurs ivoiriens qui ont déjà amélioré leurs compétences et obtenu des financements.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="Inscription.html" class="bg-white text-green-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-bold transition">S'inscrire Maintenant</a>
+                <a href="contact.html" class="border-2 border-white hover:bg-white hover:bg-opacity-10 px-6 py-3 rounded-lg font-bold transition">Nous Contacter</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <span class="text-xl font-bold">ADASH CI</span>
+                    </div>
+                    <p class="text-gray-400">La plateforme de référence pour la formation et le financement des petits agriculteurs en Côte d'Ivoire.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Liens Rapides</h3>
+                    <ul class="space-y-2">
+                        <li><a href="acceuil.html" class="text-gray-400 hover:text-white transition"><i class="fa fa-home"> </i>Accueil</a></li>
+                        <li><a href="for&cont.html" class="text-gray-400 hover:text-white transition"><i class="fa fa-chalkboard-teacher"></i>Formations</a></li>
+                        <li><a href="prêt.html" class="text-gray-400 hover:text-white transition"><i class="fa fa-hand-holding-usd"></i>Prêts Agricoles</a></li>
+                        <li><a href="mon profil.html" class="text-gray-400 hover:text-white transition"><i class="fa fa-user-circle"></i>Espace Client</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white transition"><i class="fa fa-envelope"></i>Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4" id="Contact" >Contact</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i> Abidjan, ESATIC
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2"></i> +225 05 64 43 04 36
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i> Jamou953@gmail.com
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Suivez-nous</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-green-600 flex items-center justify-center transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-green-600 flex items-center justify-center transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-green-600 flex items-center justify-center transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-green-600 flex items-center justify-center transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 ADASH CI. Tous droits réservés.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition">Conditions d'utilisation</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition">Politique de confidentialité</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Loan calculator functionality
+            const loanAmount = document.getElementById('loan-amount');
+            const loanDuration = document.getElementById('loan-duration');
+            const loanAmountValue = document.getElementById('loan-amount-value');
+            const loanDurationValue = document.getElementById('loan-duration-value');
+            const monthlyPayment = document.getElementById('monthly-payment');
+            
+            function formatNumber(num) {
+                return new Intl.NumberFormat('fr-FR').format(num);
+            }
+            
+            function calculateMonthlyPayment() {
+                const amount = parseInt(loanAmount.value);
+                const duration = parseInt(loanDuration.value);
+                const annualRate = 0.08; // 8%
+                const monthlyRate = annualRate / 12;
+                
+                // Simple loan calculation
+                const payment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -duration));
+                monthlyPayment.textContent = formatNumber(Math.round(payment)) + ' FCFA';
+            }
+            
+            loanAmount.addEventListener('input', function() {
+                loanAmountValue.textContent = formatNumber(this.value);
+                calculateMonthlyPayment();
+            });
+            
+            loanDuration.addEventListener('input', function() {
+                loanDurationValue.textContent = this.value;
+                calculateMonthlyPayment();
+            });
+            
+            // Initialize calculator
+            calculateMonthlyPayment();
+            
+            // Animation for elements
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                if (element.dataset.delay) {
+                    element.style.transitionDelay = element.dataset.delay;
+                }
+                fadeInObserver.observe(element);
+            });
+        });
+        import { ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+set(ref(database, 'utilisateurs/user1'), {
+  nom: "Jean",
+  age: 25
+});
+   
+    </script>
+    
+</body>
+</html>

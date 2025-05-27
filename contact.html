@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADASH CI - Contactez-nous</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .map-container {
+            height: 100%;
+            min-height: 300px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+        }
+        .floating-label {
+            position: absolute;
+            pointer-events: none;
+            left: 12px;
+            top: 12px;
+            transition: 0.2s ease all;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .form-input:focus ~ .floating-label,
+        .form-input:not(:placeholder-shown) ~ .floating-label {
+            top: -8px;
+            left: 10px;
+            font-size: 12px;
+            background-color: white;
+            padding: 0 4px;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Alogo.jpg" alt="Logo ADASH CI" class="h-12 mr-3">
+                <h1 class="text-xl font-bold text-green-800">ADASH CI</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button id="notification-btn" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button id="profile-btn" class="flex items-center space-x-2">
+                        <img src="boura.jpg" alt="Profil" class="w-10 h-10 rounded-full">
+                        <span class="hidden md:inline text-gray-700">Doumbia I.</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="acceuil.html" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600">
+                        <i class="fas fa-home mr-2"></i>
+                        Accueil
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Contact</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Contactez-nous</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Nous sommes là pour répondre à vos questions. Notre équipe vous répondra dans les plus brefs délais.
+            </p>
+        </div>
+
+        <!-- Contact Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <!-- Contact Form -->
+            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-semibold text-green-700 mb-6">Envoyez-nous un message</h2>
+                
+                <form id="contact-form" class="space-y-6">
+                    <div class="relative">
+                        <input type="text" id="name" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" ">
+                        <label for="name" class="floating-label">Votre nom complet</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <input type="email" id="email" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" ">
+                        <label for="email" class="floating-label">Votre adresse email</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <input type="tel" id="phone" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" ">
+                        <label for="phone" class="floating-label">Votre numéro de téléphone</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="subject" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 appearance-none">
+                            <option value="" disabled selected></option>
+                            <option value="loan">Demande de prêt</option>
+                            <option value="support">Support technique</option>
+                            <option value="partnership">Partenariat</option>
+                            <option value="other">Autre question</option>
+                        </select>
+                        <label for="subject" class="floating-label">Sujet de votre message</label>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <textarea id="message" rows="5" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500" placeholder=" "></textarea>
+                        <label for="message" class="floating-label">Votre message</label>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input id="consent" type="checkbox" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500">
+                        <label for="consent" class="ml-2 text-sm text-gray-600">
+                            J'accepte que mes données personnelles soient utilisées pour me recontacter.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Envoyer le message
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Contact Info & Map -->
+            <div class="space-y-6">
+                <!-- Contact Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="contact-card bg-white p-6 rounded-xl shadow-md transition duration-300">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-map-marker-alt text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-800 mb-1">Adresse</h3>
+                                <p class="text-gray-600">Rue Kouamé Théodore 278, Abidjan Treichville<br>ESATIC, BATIMENT E</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card bg-white p-6 rounded-xl shadow-md transition duration-300">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-phone-alt text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-800 mb-1">Téléphone</h3>
+                                <p class="text-gray-600">+225 05 64 43 04 36<br>Lun-Ven: 8h-17h</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card bg-white p-6 rounded-xl shadow-md transition duration-300">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-envelope text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-800 mb-1">Email</h3>
+                                <p class="text-gray-600">rsae5988@gmail.com<br>Jamou953@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card bg-white p-6 rounded-xl shadow-md transition duration-300">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-clock text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-800 mb-1">Horaires</h3>
+                                <p class="text-gray-600">Lundi-Vendredi: 8h-17h<br>Samedi: 9h-13h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Map -->
+                <div class="bg-white p-4 rounded-xl shadow-md">
+                    <h3 class="font-semibold text-lg text-gray-800 mb-4">Trouvez-nous</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.8202864432023!2d-4.001420925646521!3d5.290719336261595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1e95a7230b815%3A0xb42441cd6ea4939c!2sECOLE%20SUP%C3%89RIEURE%20AFRICAINE%20DES%20TIC%20(%20ESATIC)!5e0!3m2!1sfr!2sci!4v1747100168580!5m2!1sfr!2sci" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="bg-white rounded-xl shadow-md p-6 md:p-8 mb-16">
+            <h2 class="text-2xl font-semibold text-green-700 mb-6">Questions fréquentes</h2>
+            
+            <div class="space-y-4">
+                <div class="border-b border-gray-200 pb-4">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-green-600 focus:outline-none">
+                        <span>Comment puis-je demander un prêt ?</span>
+                        <i class="fas fa-chevron-down text-green-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer mt-2 text-gray-600 hidden">
+                        <p>Vous pouvez faire une demande de prêt directement depuis votre espace client en ligne. Rendez-vous dans la section "Mes prêts" et cliquez sur "Nouvelle demande". Notre équipe traitera votre demande dans les 48 heures.</p>
+                    </div>
+                </div>
+                
+                <div class="border-b border-gray-200 pb-4">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-green-600 focus:outline-none">
+                        <span>Quels documents dois-je fournir ?</span>
+                        <i class="fas fa-chevron-down text-green-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer mt-2 text-gray-600 hidden">
+                        <p>Pour une demande de prêt, vous aurez besoin de : une pièce d'identité valide, un justificatif de domicile de moins de 3 mois, vos 3 derniers relevés bancaires, et tout document relatif à votre activité professionnelle.</p>
+                    </div>
+                </div>
+                
+                <div class="border-b border-gray-200 pb-4">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-green-600 focus:outline-none">
+                        <span>Quels sont les délais de traitement ?</span>
+                        <i class="fas fa-chevron-down text-green-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer mt-2 text-gray-600 hidden">
+                        <p>Les demandes de prêt sont généralement traitées sous 48 heures ouvrables. Pour les autres demandes (support, partenariat), nous nous engageons à vous répondre dans un délai maximum de 24 heures.</p>
+                    </div>
+                </div>
+                
+                <div class="border-b border-gray-200 pb-4">
+                    <button class="faq-question flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-green-600 focus:outline-none">
+                        <span>Comment contacter mon conseiller ?</span>
+                        <i class="fas fa-chevron-down text-green-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer mt-2 text-gray-600 hidden">
+                        <p>Votre conseiller dédié est disponible par téléphone au numéro indiqué dans votre espace client, ou par email à l'adresse conseiller@adash-ci.com. Vous pouvez également prendre rendez-vous directement depuis votre espace client.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-xl shadow-lg p-8 text-center text-white">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4">Vous avez besoin d'aide immédiate ?</h2>
+            <p class="text-lg mb-6 max-w-2xl mx-auto">Notre service client est disponible pour vous aider du lundi au vendredi de 8h à 17h.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="tel:+2252021222324" class="bg-white text-green-700 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-phone-alt mr-2"></i>
+                    Appelez-nous
+                </a>
+                <a href="mailto:contact@adash-ci.com" class="bg-transparent border-2 border-white hover:bg-white hover:bg-opacity-10 font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-envelope mr-2"></i>
+                    Envoyez un email
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ADASH CI</h3>
+                    <p class="text-gray-400">Votre partenaire en agriculture durable et financement inclusif.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Liens utiles</h4>
+                    <ul class="space-y-2">
+                        <li><a href="acceuil.html" class="text-gray-400 hover:text-white">Accueil</a></li>
+                        <li><a href="for&cont.html" class="text-gray-400 hover:text-white">Nos formations</a></li>
+                        <li><a href="prêt.html" class="text-gray-400 hover:text-white">Demande de prêt</a></li>
+                        <li><a href="mon profil.html" class="text-gray-400 hover:text-white">Espace client</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Centre d'aide</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Nous contacter</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Statut des services</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Légal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Conditions d'utilisation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Mentions légales</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2025 ADASH CI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const consent = document.getElementById('consent').checked;
+            
+            // Simple validation
+            if (!name || !email) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            if (!consent) {
+                alert('Veuillez accepter l\'utilisation de vos données personnelles.');
+                return;
+            }
+            
+            // Show success message (in a real app, you would send this to a server)
+            alert('Merci pour votre message, ' + name + '! Nous vous contacterons bientôt à l\'adresse ' + email + '.');
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                // Toggle answer visibility
+                answer.classList.toggle('hidden');
+                
+                // Rotate icon
+                icon.classList.toggle('transform');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+        
+        // Floating labels
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('.floating-label').classList.add('text-green-600');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.querySelector('.floating-label').classList.remove('text-green-600');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
